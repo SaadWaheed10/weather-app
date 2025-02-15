@@ -4,11 +4,12 @@ import WeatherList from '../components/WeatherList';
 import colors from '../assets/theme/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {moderateScale} from '../utils/responsive';
+import MainHeader from '../components/MainHeader';
 
 const HomeScreen = () => {
   return (
     <LinearGradient colors={colors.gradientBackground} style={styles.container}>
-      <Text style={styles.title}>🌤 Weather App</Text>
+      <MainHeader title="🌤 Weather App" showBackButton={false} />
       <Text style={styles.subtitle}>Get real-time weather updates</Text>
       <WeatherList />
     </LinearGradient>
@@ -29,9 +30,9 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(10),
   },
   subtitle: {
-    fontSize: moderateScale(18),
+    fontSize: moderateScale(20),
     color: colors.textSecondary,
-    marginBottom: moderateScale(15),
+    marginVertical: moderateScale(20),
   },
 });
 
