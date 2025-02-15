@@ -10,9 +10,11 @@ const colors = {
   rainy: '#4A90E2',
   stormy: '#37474F',
   snowy: '#ECEFF1',
-  gradientBackground: ['#6A9CFD', '#A0C4FF'],
+  gradientBackground: ['#00467F', '#A5CC82'],
+  darkGradient: ['#0F2027', '#203A43', '#2C5364'],
   softTeal: '#76D7C4',
   deepRed: '#FF3B3B',
+  black: '#000000',
 };
 
 export default colors;

@@ -1,16 +1,30 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, Switch, View} from 'react-native';
 import WeatherList from '../components/WeatherList';
 import colors from '../assets/theme/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {moderateScale} from '../utils/responsive';
 import MainHeader from '../components/MainHeader';
+import {useTheme} from '../context/ThemeContext';
 
 const HomeScreen = () => {
+  const {isDarkMode, toggleTheme} = useTheme();
+
   return (
-    <LinearGradient colors={colors.gradientBackground} style={styles.container}>
+    <LinearGradient
+      colors={isDarkMode ? colors.darkGradient : colors.gradientBackground}
+      style={styles.container}>
       <MainHeader title="🌤 Weather App" showBackButton={false} />
-      <Text style={styles.subtitle}>Get real-time weather updates</Text>
+      <View style={styles.toggleContainer}>
+        <Text
+          style={[
+            styles.toggleText,
+            {color: isDarkMode ? colors.textPrimary : colors.black},
+          ]}>
+          Dark Mode
+        </Text>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+      </View>
       <WeatherList />
     </LinearGradient>
   );
@@ -22,17 +36,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    marginTop: moderateScale(70),
-    fontSize: moderateScale(28),
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: moderateScale(10),
-  },
-  subtitle: {
-    fontSize: moderateScale(20),
-    color: colors.textSecondary,
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: moderateScale(20),
+  },
+  toggleText: {
+    fontSize: moderateScale(18),
+    marginRight: moderateScale(10),
   },
 });
 

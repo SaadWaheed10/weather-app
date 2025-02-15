@@ -4,12 +4,16 @@ import MainHeader from '../components/MainHeader';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../assets/theme/colors';
 import {moderateScale, scale, verticalScale} from '../utils/responsive';
+import {useTheme} from '../context/ThemeContext';
 
 const WeatherDetailScreen = ({route}: any) => {
   const {weather} = route.params;
+  const {isDarkMode} = useTheme();
 
   return (
-    <LinearGradient colors={colors.gradientBackground} style={styles.container}>
+    <LinearGradient
+      colors={isDarkMode ? colors.darkGradient : colors.gradientBackground}
+      style={styles.container}>
       <MainHeader title={weather.city} showBackButton={true} />
 
       {/* Centered Content */}

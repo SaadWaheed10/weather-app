@@ -19,6 +19,7 @@ import {
 } from '../utils/responsive';
 import {useNavigation} from '@react-navigation/native';
 import {useFavorites} from '../context/FavoriteContext';
+import {useTheme} from '../context/ThemeContext';
 
 // Define the type for a favorite city
 type FavoriteCity = {
@@ -33,6 +34,7 @@ type FavoriteCity = {
 export default function FavoriteScreen() {
   const {favorites, toggleFavorite, isLoading} = useFavorites();
   const favoriteCities: FavoriteCity[] = Object.values(favorites);
+  const {isDarkMode} = useTheme();
   const navigation = useNavigation<{
     navigate: (screen: string, params?: any) => void;
   }>();
@@ -47,7 +49,9 @@ export default function FavoriteScreen() {
   }
 
   return (
-    <LinearGradient colors={colors.gradientBackground} style={styles.container}>
+    <LinearGradient
+      colors={isDarkMode ? colors.darkGradient : colors.gradientBackground}
+      style={styles.container}>
       <MainHeader title="Favorite Cities" />
 
       <View style={styles.content}>
