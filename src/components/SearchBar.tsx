@@ -26,6 +26,9 @@ const SearchBar = ({
 }) => {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
   const rotation = new Animated.Value(isExpanded ? 1 : 0);
 
   useEffect(() => {
@@ -44,16 +47,40 @@ const SearchBar = ({
     }
   };
 
-  // Save search term
-  const saveSearchTerm = async (term: string) => {
-    if (!term.trim()) {
+  // Function to clear recent searches
+  const clearRecentSearches = async () => {
+    try {
+      await AsyncStorage.removeItem('recentSearches');
+      setRecentSearches([]);
+    } catch (error) {
+      console.error('Error clearing recent searches:', error);
+    }
+  };
+
+  const handleSearchChange = (text: string) => {
+    setSearch(text);
+
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      saveSearch(text);
+    }, 1000);
+
+    setTypingTimeout(timeout);
+  };
+
+  const saveSearch = async (text: string) => {
+    if (!text.trim()) {
       return;
     }
 
     let updatedSearches = [
-      term,
-      ...recentSearches.filter(item => item !== term),
+      text,
+      ...recentSearches.filter(item => item !== text),
     ];
+
     if (updatedSearches.length > 5) {
       updatedSearches.pop();
     }
@@ -70,20 +97,10 @@ const SearchBar = ({
     }
   };
 
-  // Handle search input change
-  const handleSearchChange = (text: string) => {
-    setSearch(text);
-    if (text.trim() === '') {
-      loadRecentSearches();
-    }
-  };
-
-  // Handle selecting a recent search
   const handleSelectRecentSearch = (term: string) => {
     setSearch(term);
   };
 
-  // Toggle recent searches visibility
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     Animated.timing(rotation, {
@@ -106,7 +123,6 @@ const SearchBar = ({
         placeholderTextColor={colors.textSecondary}
         value={search}
         onChangeText={handleSearchChange}
-        onSubmitEditing={() => saveSearchTerm(search)}
       />
 
       {search.trim() === '' && (
@@ -124,22 +140,35 @@ const SearchBar = ({
 
           {/* Expandable Recent Searches List */}
           {isExpanded && (
-            <FlatList
-              data={recentSearches}
-              keyExtractor={(item, index) => index.toString()}
-              style={styles.recentSearchesContainer}
-              renderItem={({item}) => (
+            <>
+              <FlatList
+                data={recentSearches}
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.recentSearchesContainer}
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectRecentSearch(item)}>
+                    <Text style={styles.recentSearchItem}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                  <Text style={styles.noRecentSearches}>
+                    No recent searches yet.
+                  </Text>
+                }
+              />
+
+              {/* Clear Recent Searches Button */}
+              {recentSearches.length > 0 && (
                 <TouchableOpacity
-                  onPress={() => handleSelectRecentSearch(item)}>
-                  <Text style={styles.recentSearchItem}>{item}</Text>
+                  onPress={clearRecentSearches}
+                  style={styles.clearButton}>
+                  <Text style={styles.clearButtonText}>
+                    Clear Recent Searches
+                  </Text>
                 </TouchableOpacity>
               )}
-              ListEmptyComponent={
-                <Text style={styles.noRecentSearches}>
-                  No recent searches yet.
-                </Text>
-              }
-            />
+            </>
           )}
         </View>
       )}
@@ -201,6 +230,18 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
     paddingVertical: verticalScale(10),
+  },
+  clearButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: verticalScale(8),
+    marginTop: verticalScale(5),
+    borderRadius: scale(8),
+    alignItems: 'center',
+  },
+  clearButtonText: {
+    fontSize: moderateScale(14),
+    color: colors.textPrimary,
+    fontWeight: 'bold',
   },
 });
 
