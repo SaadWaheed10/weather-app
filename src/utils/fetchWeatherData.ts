@@ -2,7 +2,6 @@ import NetInfo from '@react-native-community/netinfo';
 import weatherData from '../data/weatherData';
 import {saveWeatherData, loadWeatherData} from './storage';
 
-// Function to fetch weather data
 export const fetchWeatherData = async () => {
   const netState = await NetInfo.fetch();
 
@@ -13,8 +12,13 @@ export const fetchWeatherData = async () => {
 
   try {
     console.log('Online: Using static weatherData');
-    await saveWeatherData(weatherData);
-    return weatherData;
+    const cachedData = await loadWeatherData();
+
+    if (!cachedData) {
+      await saveWeatherData(weatherData);
+    }
+
+    return cachedData || weatherData;
   } catch (error) {
     console.error('Error fetching weather data:', error);
     return (await loadWeatherData()) || weatherData;

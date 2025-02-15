@@ -30,7 +30,7 @@ const WeatherList = () => {
     };
 
     loadData();
-  }, []);
+  }, [weatherData]);
 
   const filteredData = weatherData.filter(item =>
     item.city.toLowerCase().includes(search.toLowerCase()),
