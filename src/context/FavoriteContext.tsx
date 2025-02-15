@@ -5,6 +5,7 @@ const FavoritesContext = createContext<any>(null);
 
 export const FavoritesProvider = ({children}: {children: React.ReactNode}) => {
   const [favorites, setFavorites] = useState<{[key: string]: any}>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load favorites from AsyncStorage on app start
   useEffect(() => {
@@ -16,14 +17,24 @@ export const FavoritesProvider = ({children}: {children: React.ReactNode}) => {
         }
       } catch (error) {
         console.error('Error loading favorites:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadFavorites();
   }, []);
 
-  // Toggle favorite and save to AsyncStorage
-  const toggleFavorite = async (cityData: any) => {
+  useEffect(() => {
+    if (!isLoading) {
+      AsyncStorage.setItem('favorites', JSON.stringify(favorites)).catch(
+        error => console.error('Error saving favorites:', error),
+      );
+    }
+  }, [favorites, isLoading]);
+
+  // Toggle favorite
+  const toggleFavorite = (cityData: any) => {
     setFavorites(prevState => {
       const updatedFavorites = {...prevState};
 
@@ -33,17 +44,12 @@ export const FavoritesProvider = ({children}: {children: React.ReactNode}) => {
         updatedFavorites[cityData.city] = cityData;
       }
 
-      // Save updated favorites to AsyncStorage
-      AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites)).catch(
-        error => console.error('Error saving favorites:', error),
-      );
-
       return updatedFavorites;
     });
   };
 
   return (
-    <FavoritesContext.Provider value={{favorites, toggleFavorite}}>
+    <FavoritesContext.Provider value={{favorites, toggleFavorite, isLoading}}>
       {children}
     </FavoritesContext.Provider>
   );

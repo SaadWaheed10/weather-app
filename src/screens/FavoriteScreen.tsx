@@ -1,6 +1,12 @@
 import React from 'react';
-import {Text, FlatList, StyleSheet, View, TouchableOpacity} from 'react-native';
-import {useFavorites} from '../context/FavoriteContext';
+import {
+  Text,
+  FlatList,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import WeatherCard from '../components/WeatherCard';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../assets/theme/colors';
@@ -12,7 +18,9 @@ import {
   verticalScale,
 } from '../utils/responsive';
 import {useNavigation} from '@react-navigation/native';
+import {useFavorites} from '../context/FavoriteContext';
 
+// Define the type for a favorite city
 type FavoriteCity = {
   id: number;
   city: string;
@@ -23,9 +31,20 @@ type FavoriteCity = {
 };
 
 export default function FavoriteScreen() {
-  const {favorites, toggleFavorite} = useFavorites();
+  const {favorites, toggleFavorite, isLoading} = useFavorites();
   const favoriteCities: FavoriteCity[] = Object.values(favorites);
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<{
+    navigate: (screen: string, params?: any) => void;
+  }>();
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Loading favorites...</Text>
+      </View>
+    );
+  }
 
   return (
     <LinearGradient colors={colors.gradientBackground} style={styles.container}>
@@ -38,8 +57,8 @@ export default function FavoriteScreen() {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={favoriteCities}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}: {item: any}) => (
+            keyExtractor={(item: FavoriteCity) => item.id.toString()}
+            renderItem={({item}: {item: FavoriteCity}) => (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('WeatherDetail', {weather: item})
@@ -51,11 +70,12 @@ export default function FavoriteScreen() {
                   weather={item.weather}
                   humidity={item.humidity}
                   windSpeed={item.windSpeed}
-                  isFavorite={favorites[item.city] || false}
+                  isFavorite={Boolean(favorites[item.city])}
                   onToggleFavorite={() => toggleFavorite(item)}
                 />
               </TouchableOpacity>
             )}
+            contentContainerStyle={styles.listContainer}
           />
         )}
       </View>
@@ -83,5 +103,15 @@ const styles = StyleSheet.create({
   listContainer: {
     alignItems: 'center',
     paddingBottom: scale(20),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: moderateScale(16),
+    color: colors.textSecondary,
+    marginTop: verticalScale(10),
   },
 });
