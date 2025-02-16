@@ -15,6 +15,7 @@ const colors = {
   softTeal: '#76D7C4',
   deepRed: '#FF3B3B',
   black: '#000000',
+  mist: '#708090',
 };
 
 export default colors;

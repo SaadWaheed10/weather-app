@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import Ionicons
 import colors from '../assets/theme/colors';
 import {
   moderateScale,
@@ -17,15 +18,20 @@ const MainHeader = ({
   showBackButton?: boolean;
 }) => {
   const navigation = useNavigation();
+  const ICONS: any = Icon;
 
   return (
     <View style={styles.header}>
-      {/* Back Button on the Left */}
+      {/* Back Button with Ionicon Arrow */}
       {showBackButton ? (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
-          <Text style={styles.backArrow}>←</Text>
+          <ICONS
+            name="arrow-back"
+            size={moderateScale(24)}
+            color={colors.textPrimary}
+          />
         </TouchableOpacity>
       ) : (
         <View style={styles.backButtonPlaceholder} />
@@ -53,10 +59,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: scale(10),
-  },
-  backArrow: {
-    fontSize: moderateScale(20),
-    color: colors.textPrimary,
   },
   title: {
     fontSize: moderateScale(18),

@@ -9,6 +9,12 @@ import {
   moderateScale,
 } from '../utils/responsive';
 import TemperatureToggle from './TemperatueToggle';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import weatherIconMap from '../assets/icons/weatherIcons';
+import LottieView from 'lottie-react-native';
+import rainyAnimation from '../assets/animations/rainy.json';
+import cloudyAnimation from '../assets/animations/cloudy.json';
+import sunnyAnimation from '../assets/animations/sunny.json';
 
 type WeatherCardProps = {
   city: string;
@@ -36,12 +42,17 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
   };
   const displayedTemp = isFahrenheit ? (temperature * 9) / 5 + 32 : temperature;
 
+  // Dynamically set icon and color based on weather
+  const weatherIcon = weatherIconMap[weather] || 'question-circle';
+  const weatherColor = getWeatherColor(weather);
+  const FA5: any = FontAwesome5;
+  const weatherAnimations: any = {
+    Sunny: sunnyAnimation,
+    Cloudy: cloudyAnimation,
+    Rainy: rainyAnimation,
+  };
   return (
-    <View
-      style={[
-        styles.card,
-        {backgroundColor: getWeatherColor(weather), height: verticalScale(160)},
-      ]}>
+    <View style={[styles.card, {backgroundColor: weatherColor}]}>
       {/* Top Row: Temperature Toggle & Favorite Button */}
       <View style={styles.topRow}>
         <TemperatureToggle
@@ -51,8 +62,24 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
         <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
       </View>
 
-      {/* City Name */}
-      <Text style={styles.city}>{city}</Text>
+      <LottieView
+        source={weatherAnimations[weather]}
+        autoPlay
+        loop
+        style={styles.animation}
+      />
+      {/* Weather Icon */}
+      <View style={styles.iconContainer}>
+        {/* City Name */}
+        <Text style={styles.city}>{city}</Text>
+        <FA5
+          name={weatherIcon}
+          size={moderateScale(20)}
+          color={colors.textPrimary}
+          style={styles.icon}
+          solid
+        />
+      </View>
 
       {/* Temperature and Weather */}
       <Text style={styles.temp}>
@@ -86,7 +113,8 @@ const styles = StyleSheet.create({
   card: {
     width: SCREEN_WIDTH * 0.9,
     padding: scale(15),
-    marginVertical: verticalScale(8),
+    paddingVertical: scale(20),
+    marginVertical: verticalScale(10),
     borderRadius: scale(10),
     alignItems: 'center',
     justifyContent: 'center',
@@ -98,13 +126,25 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   topRow: {
-    position: 'absolute',
-    top: scale(10),
-    left: scale(10),
-    right: scale(10),
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
+  },
+  animation: {
+    width: moderateScale(60),
+    height: moderateScale(60),
+    marginBottom: scale(10),
+  },
+  iconContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(20),
+  },
+  icon: {
+    marginBottom: verticalScale(5),
   },
   city: {
     fontSize: moderateScale(20),

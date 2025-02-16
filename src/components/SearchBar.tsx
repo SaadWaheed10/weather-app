@@ -16,6 +16,7 @@ import {
   moderateScale,
 } from '../utils/responsive';
 import colors from '../assets/theme/colors';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const SearchBar = ({
   search,
@@ -30,6 +31,7 @@ const SearchBar = ({
     null,
   );
   const rotation = new Animated.Value(isExpanded ? 1 : 0);
+  const FA5: any = FontAwesome;
 
   useEffect(() => {
     loadRecentSearches();
@@ -132,10 +134,13 @@ const SearchBar = ({
             onPress={toggleExpand}
             style={styles.recentSearchHeader}>
             <Text style={styles.recentSearchText}>Recent Searches</Text>
-            <Animated.Text
-              style={[styles.arrow, {transform: [{rotate: arrowRotation}]}]}>
-              ⬇️
-            </Animated.Text>
+            <Animated.View style={{transform: [{rotate: arrowRotation}]}}>
+              <FA5
+                name="chevron-down"
+                size={moderateScale(16)}
+                color={colors.textSecondary}
+              />
+            </Animated.View>
           </TouchableOpacity>
 
           {/* Expandable Recent Searches List */}
@@ -147,7 +152,13 @@ const SearchBar = ({
                 style={styles.recentSearchesContainer}
                 renderItem={({item}) => (
                   <TouchableOpacity
-                    onPress={() => handleSelectRecentSearch(item)}>
+                    onPress={() => handleSelectRecentSearch(item)}
+                    style={styles.recentSearchItemContainer}>
+                    <FA5
+                      name="history"
+                      size={moderateScale(14)}
+                      color={colors.textSecondary}
+                    />
                     <Text style={styles.recentSearchItem}>{item}</Text>
                   </TouchableOpacity>
                 )}
@@ -210,20 +221,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontWeight: 'bold',
   },
-  arrow: {
-    fontSize: moderateScale(16),
-    color: colors.textSecondary,
-  },
   recentSearchesContainer: {
     backgroundColor: colors.background,
     borderRadius: scale(8),
     padding: scale(10),
     marginTop: verticalScale(5),
   },
+  recentSearchItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: verticalScale(5),
+  },
   recentSearchItem: {
     fontSize: moderateScale(14),
     color: colors.textSecondary,
-    paddingVertical: verticalScale(5),
+    paddingLeft: scale(8),
   },
   noRecentSearches: {
     fontSize: moderateScale(14),
