@@ -68,7 +68,7 @@ const SearchBar = ({
 
     const timeout = setTimeout(() => {
       saveSearch(text);
-    }, 1000);
+    }, 600);
 
     setTypingTimeout(timeout);
   };
