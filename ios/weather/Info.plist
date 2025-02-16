@@ -33,7 +33,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+<string>We need access to your location to fetch weather data.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>We need access to your location to fetch weather data.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
