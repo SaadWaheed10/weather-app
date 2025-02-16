@@ -23,7 +23,9 @@ const HomeScreen = () => {
           ]}>
           Dark Mode
         </Text>
-        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+        <View style={styles.switchContainer}>
+          <Switch value={isDarkMode} onValueChange={toggleTheme} />
+        </View>
       </View>
       <WeatherList />
     </LinearGradient>
@@ -44,6 +46,9 @@ const styles = StyleSheet.create({
   toggleText: {
     fontSize: moderateScale(18),
     marginRight: moderateScale(10),
+  },
+  switchContainer: {
+    transform: [{scaleX: 0.9}, {scaleY: 0.9}],
   },
 });
 
