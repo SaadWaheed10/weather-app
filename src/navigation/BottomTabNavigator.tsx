@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import {Text, StyleSheet, Animated} from 'react-native';
 import {moderateScale, scale} from '../utils/responsive';
 import colors from '../assets/theme/colors';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import HomeStack from '../main-stack/HomeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +49,7 @@ const BottomTabNavigator = () => {
           </Text>
         ),
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Favorite" component={FavoriteScreen} />
     </Tab.Navigator>
   );
